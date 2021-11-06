@@ -1,0 +1,106 @@
+﻿Imports System.Text
+Imports LTRLib.Compiler
+Imports System.Security
+Imports System.Security.Permissions
+Imports System.IO
+Imports System.Reflection
+
+Public Class ScriptControl
+
+    Protected Delegate Function ExpressionMethodDelegate(X As Double, Y As Double) As Double?
+
+    Protected ExpressionMethod As ExpressionMethodDelegate
+
+    Protected m_Expression As String
+
+    Public Sub New(Language As CodeCompiler.CompilerLanguage)
+        Me.Language = Language
+
+    End Sub
+
+    Protected ReadOnly Language As CodeCompiler.CompilerLanguage
+
+    Public Property Expression As String
+        Get
+            Return m_Expression
+        End Get
+        Set(value As String)
+            If value = m_Expression Then
+                Return
+            End If
+
+            m_Expression = Nothing
+            ExpressionMethod = Nothing
+
+            Dim SourceCode As New StringBuilder
+            SourceCode.AppendLine("'Reference " & Assembly.GetExecutingAssembly().Location)
+            SourceCode.AppendLine()
+            SourceCode.AppendLine("Imports System.Math")
+            SourceCode.AppendLine("Imports GraphViewer.MathExtensions")
+            SourceCode.AppendLine()
+            SourceCode.AppendLine("Public Class SourceCode")
+            SourceCode.AppendLine()
+            SourceCode.AppendLine("  Public Shared Function EvaluateExpression(X As Double, Y As Double) As System.Nullable(Of Double)")
+            SourceCode.AppendLine()
+            SourceCode.AppendLine("    Try")
+            SourceCode.AppendLine("      Return " & value)
+            SourceCode.AppendLine()
+            SourceCode.AppendLine("    Catch")
+            SourceCode.AppendLine("      Return Nothing")
+            SourceCode.AppendLine()
+            SourceCode.AppendLine("    End Try")
+            SourceCode.AppendLine()
+            SourceCode.AppendLine("  End Function")
+            SourceCode.AppendLine()
+            SourceCode.AppendLine("End Class")
+
+            Dim compilerVersion As CodeCompiler.CompilerVersion
+            Select Case Environment.Version.Major
+                Case Is >= 4
+                    compilerVersion = CodeCompiler.CompilerVersion.v4_0
+                Case Is >= 2
+                    compilerVersion = CodeCompiler.CompilerVersion.v2_0
+            End Select
+            Dim CompilerResults = CodeCompiler.CompileSourceCodeToMemory({SourceCode.ToString()}, Language, compilerVersion, Nothing)
+            If CompilerResults.Output.Count > 1 Then
+                Dim CompilerOutput As New StringBuilder
+                For Each Row In CompilerResults.Output
+                    CompilerOutput.AppendLine(Row)
+                Next
+
+                FormCompilerOutput.Text = "Compile errors"
+                FormCompilerOutput.TextBox.Text = CompilerOutput.ToString()
+                FormCompilerOutput.TextBox.SelectionStart = FormCompilerOutput.TextBox.TextLength
+                FormCompilerOutput.TextBox.ScrollToCaret()
+                FormCompilerOutput.ShowDialog()
+                Throw New Exception(CompilerResults.Errors(0).ErrorText)
+            End If
+
+            Dim method =
+                CompilerResults.
+                CompiledAssembly.
+                GetType("SourceCode").
+                GetMethod("EvaluateExpression",
+                          BindingFlags.Public Or BindingFlags.Static,
+                          Nothing,
+                          {GetType(Double), GetType(Double)},
+                          Nothing)
+
+            ExpressionMethod =
+              DirectCast([Delegate].CreateDelegate(GetType(ExpressionMethodDelegate),
+                                                   method), 
+                                                         ExpressionMethodDelegate)
+
+            m_Expression = value
+        End Set
+    End Property
+
+    Public Function Eval(X As Double, Y As Double) As Double?
+        If ExpressionMethod Is Nothing Then
+            Return Nothing
+        End If
+
+        Return ExpressionMethod(X, Y)
+    End Function
+
+End Class

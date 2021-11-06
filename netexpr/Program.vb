@@ -57,7 +57,12 @@ Public Module Program
             End If
             paramValues.Add(param.Name, New KeyValuePair(Of ParameterExpression, Double)(param, value))
         End While
+
+#If NETFRAMEWORK AndAlso Not NET40_OR_GREATER Then
+        Dim lambda = Expression.Lambda(expr, paramValues.Values.Select(Function(v) v.Key).ToArray()).Compile()
+#Else
         Dim lambda = Expression.Lambda(expr, paramValues.Values.Select(Function(v) v.Key)).Compile()
+#End If
 
         Dim values = paramValues.Values.Select(Function(v) CObj(v.Value)).ToArray()
         Dim returnValue = CDbl(lambda.DynamicInvoke(values))
