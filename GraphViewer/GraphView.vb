@@ -2,6 +2,8 @@ Imports System.Drawing
 Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Windows.Forms
+Imports LTRLib.Forms.MathGraph
+Imports LTRLib.MathExpression
 
 #Disable Warning IDE1006 ' Naming Styles
 
@@ -26,7 +28,7 @@ Public Class GraphView
       .Alignment = StringAlignment.Center}
 
     ' This is the object that provides formula evaluation functions
-    Private ReadOnly ScriptControl As New ScriptControl(CultureInfo.InvariantCulture)
+    Private ReadOnly ScriptControl As New ScriptControl(New MathExpressionParser(CultureInfo.InvariantCulture))
 
     ' This is the drawing surface instance for the form
     Private ReadOnly ScreenSurface As New Surface

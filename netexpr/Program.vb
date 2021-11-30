@@ -28,7 +28,7 @@ Public Module Program
             Return -1
         End If
 
-        Dim exprParser As New MathExpressionParser(NumberFormatInfo.InvariantInfo)
+        Dim exprParser As New MathExpressionParser(CultureInfo.InvariantCulture)
         Dim parameters As ParameterExpression() = Nothing
 
         Dim expr = exprParser.ParseExpression(String.Join(" ", args), parameters)
