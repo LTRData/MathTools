@@ -7,9 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="LTRLib40.Extended">
+    <Reference Include="LTRLib.Geodesy">
       <HintPath>..\..\LTRLib\$(Configuration)\$(TargetFramework)\LTRLib.Geodesy.dll</HintPath>
-      <Private>true</Private>
     </Reference>
   </ItemGroup>
 
