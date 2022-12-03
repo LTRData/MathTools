@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="LTRLib40" Version="*" />
-    <PackageReference Include="LTRLib40.Extended" Version="*" />
   </ItemGroup>
 
   <ItemGroup>
