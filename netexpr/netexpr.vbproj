@@ -10,8 +10,4 @@
     <PackageReference Include="LTRLib40" Version="*" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="My Project\" />
-  </ItemGroup>
-
 </Project>

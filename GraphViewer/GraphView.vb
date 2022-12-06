@@ -2,7 +2,7 @@ Imports System.Drawing
 Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Windows.Forms
-Imports LTRLib.Forms.MathGraph
+Imports LTRLib.MathGraph
 Imports LTRLib.MathExpression
 
 #Disable Warning IDE1006 ' Naming Styles
