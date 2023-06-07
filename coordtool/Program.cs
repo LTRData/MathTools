@@ -6,7 +6,7 @@ namespace coordtool;
 
 public static class Program
 {
-    public static void Main(string[] args)
+    public static void Main(params string[] args)
     {
         WGS84Position basepos = null;
 
@@ -68,7 +68,8 @@ public static class Program
                     Console.WriteLine();
 
                     var throughdistance = basepos.GetDistanceThroughEarth(pos);
-                    var surfacedistance = LatLonPosition.GetSurfaceDistance(throughdistance, basepos.EarthRadius);
+                    var surfacedistance = Position.GetSurfaceDistance(throughdistance, basepos.EarthRadius);
+                    var wwldistancepoints = basepos.GetWWLDistancePoints(pos);
                     var bearing = basepos.GetBearing(pos);
                     var reversebearing = 180 + bearing;
                     if (reversebearing > 360)
@@ -78,6 +79,7 @@ public static class Program
 
                     Console.WriteLine($"Through distance: {(throughdistance / 1000).ToString("0.00", NumberFormatInfo.InvariantInfo)} km");
                     Console.WriteLine($"Surface distance: {(surfacedistance / 1000).ToString("0.00", NumberFormatInfo.InvariantInfo)} km");
+                    Console.WriteLine($"Distance points: {wwldistancepoints} km");
                     Console.WriteLine($"Bearing: {bearing.ToString("0.00", NumberFormatInfo.InvariantInfo)}°");
                     Console.WriteLine($"Reverse bearing: {reversebearing.ToString("0.00", NumberFormatInfo.InvariantInfo)}°");
                     if (pos.Equals(basepos))
