@@ -4,7 +4,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net20;net40;net6.0</TargetFrameworks>
-    <Copyright>Copyright (c) LTR Data, Olof Lagerkvist 2011-2022</Copyright>
+    <Copyright>Copyright (c) LTR Data, Olof Lagerkvist 2011-2023</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
