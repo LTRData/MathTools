@@ -1,4 +1,5 @@
-﻿using LTRLib.Geodesy.Positions;
+﻿using LTRData.Extensions.Buffers;
+using LTRLib.Geodesy.Positions;
 using System;
 using System.Globalization;
 
@@ -19,11 +20,11 @@ public static class Program
                 RT90Position RTcoord;
 
                 if (arg.Length >= 7 &&
-                    arg.Contains(",") &&
+                    arg.Contains(',') &&
                     arg.TrimStart().Substring(0, 2).Equals("x=", StringComparison.InvariantCultureIgnoreCase) &&
                     arg.Substring(arg.IndexOf(',') + 1).TrimStart().Substring(0, 2).Equals("y=", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    var coordstr = arg.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    var coordstr = arg.Split(',', StringSplitOptions.RemoveEmptyEntries);
                     if (coordstr.Length != 2)
                     {
                         throw new FormatException("Invalid RT90 coordinate string.");

@@ -95,5 +95,4 @@ luhn [/PG]
 
         return (char)(checksum + '0');
     }
-
 }

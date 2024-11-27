@@ -19,6 +19,8 @@ Public Module Program
 
     End Function
 
+    Private ReadOnly separator As Char() = {" "c, "="c}
+
     Public Function UnsafeMain(args As String()) As Integer
 
         If args Is Nothing OrElse args.Length < 1 Then
@@ -40,7 +42,7 @@ Public Module Program
 
         While Not parameters.All(Function(p) paramValues.ContainsKey(p.Name))
 
-            Dim line = Console.ReadLine().Split({" "c, "="c}, StringSplitOptions.RemoveEmptyEntries)
+            Dim line = Console.ReadLine().Split(separator, StringSplitOptions.RemoveEmptyEntries)
             Dim param = parameters.FirstOrDefault(Function(p) p.Name = line(0))
             If param Is Nothing Then
                 Console.Error.WriteLine($"Parameter {line(0)} not part of expression.")

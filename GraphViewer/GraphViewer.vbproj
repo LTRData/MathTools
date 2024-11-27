@@ -5,7 +5,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <OutputPath>..\$(Configuration)</OutputPath>
-    <TargetFrameworks>net6.0-windows;net35;net40</TargetFrameworks>
+    <TargetFrameworks>net8.0-windows;net9.0-windows;net35;net40</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 

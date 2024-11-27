@@ -1,5 +1,6 @@
 Imports System.Reflection
 Imports System.Text
+Imports System.Windows.Forms
 
 Public NotInheritable Class AboutBox
 
@@ -20,6 +21,7 @@ Public NotInheritable Class AboutBox
         Else
             ApplicationTitle = IO.Path.GetFileNameWithoutExtension(asm.Location)
         End If
+
         Text = $"About {ApplicationTitle}"
         ' Initialize all of the text displayed on the About Box.
         ' TODO: Customize the application's assembly information in the "Application" pane of the project 
@@ -42,10 +44,10 @@ Public NotInheritable Class AboutBox
     End Sub
 
     Private Sub OKButton_Click(sender As Object, e As EventArgs) Handles OKButton.Click
-        Me.Close()
+        Close()
     End Sub
 
-    Private Sub LinkLabel_LinkClicked(sender As Object, e As Windows.Forms.LinkLabelLinkClickedEventArgs) Handles LinkLabel.LinkClicked
-        System.Diagnostics.Process.Start("http://www.ltr-data.se")
+    Private Sub LinkLabel_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles LinkLabel.LinkClicked
+        Process.Start("https://ltr-data.se")
     End Sub
 End Class
