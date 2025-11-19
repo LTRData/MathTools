@@ -3,7 +3,7 @@ Imports System.Drawing.Imaging
 Imports System.Globalization
 Imports System.Windows.Forms
 Imports LTRLib.MathGraph
-Imports LTRLib.MathExpression
+Imports LTRData.MathExpression
 
 #Disable Warning IDE1006 ' Naming Styles
 
@@ -76,7 +76,7 @@ Public Class GraphView
           e.KeyChar <> "." AndAlso
           Not (e.KeyChar = "-" AndAlso
                DirectCast(sender, TextBox).SelectionStart = 0 AndAlso
-               Not DirectCast(sender, TextBox).Text.StartsWith("-")) Then
+               Not DirectCast(sender, TextBox).Text.StartsWith("-"c)) Then
 
             e.Handled = True
 

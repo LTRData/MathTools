@@ -5,7 +5,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <OutputPath>..\$(Configuration)</OutputPath>
-    <TargetFrameworks>net8.0-windows;net9.0-windows;net35;net40</TargetFrameworks>
+    <TargetFrameworks>net8.0-windows;net9.0-windows;net10.0-windows;net35;net40</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
@@ -23,7 +23,6 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="LTRLib40" Version="*" />
     <PackageReference Include="LTRLib.Windows" Version="*" />
   </ItemGroup>
   

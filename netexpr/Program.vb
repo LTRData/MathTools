@@ -1,7 +1,7 @@
 ﻿Imports System.Globalization
 Imports System.Linq.Expressions
 Imports LTRData.Extensions.Formatting
-Imports LTRLib.MathExpression
+Imports LTRData.MathExpression
 
 Public Module Program
 

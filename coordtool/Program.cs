@@ -1,9 +1,12 @@
 ﻿using LTRData.Extensions.Buffers;
-using LTRLib.Geodesy.Positions;
+using LTRData.Geodesy.Positions;
 using System;
 using System.Globalization;
 
 namespace coordtool;
+
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+#pragma warning disable IDE0057 // Use range operator
 
 public static class Program
 {
