@@ -5,7 +5,6 @@
   </Folder>
   <Project Path="base64/base64.csproj" />
   <Project Path="coordtool/coordtool.csproj" />
-  <Project Path="GraphViewer/GraphViewer.vbproj" />
   <Project Path="luhn/luhn.csproj" />
   <Project Path="netexpr/netexpr.vbproj" />
 </Solution>
