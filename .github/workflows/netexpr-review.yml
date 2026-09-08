@@ -20,8 +20,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     env:
-      LocalNuGetPath: ${{ runner.temp }}/netexpr-feed
-      NUGET_PACKAGES: ${{ runner.temp }}/netexpr-packages
+      LocalNuGetPath: ${{ github.workspace }}/.package-review/netexpr-feed
+      NUGET_PACKAGES: ${{ github.workspace }}/.package-review/netexpr-packages
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
     defaults:
       run:
