@@ -1,0 +1,78 @@
+name: netexpr package review
+
+on:
+  push:
+    branches: [master, experimental/math-expression-migration]
+    paths: [netexpr/**, netexpr.Review/**, Directory.Build.props, .github/workflows/netexpr-review.yml]
+  pull_request:
+    paths: [netexpr/**, netexpr.Review/**, Directory.Build.props, .github/workflows/netexpr-review.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      LocalNuGetPath: ${{ github.workspace }}/.package-review/netexpr-feed
+      NUGET_PACKAGES: ${{ github.workspace }}/.package-review/netexpr-packages
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: consumer
+      - uses: actions/checkout@v4
+        with:
+          repository: LTRData/Library
+          ref: 0e853ea1abdc3d4484695db1e026ebf88535ae42
+          path: library
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - name: Configure the shared package feed
+        run: |
+          New-Item -ItemType Directory -Force $env:LocalNuGetPath | Out-Null
+          @'
+          <configuration>
+            <packageSources>
+              <clear />
+              <add key="local" value="%LocalNuGetPath%" />
+              <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+            </packageSources>
+            <packageSourceMapping>
+              <clear />
+              <packageSource key="local"><package pattern="LTRData.*" /></packageSource>
+              <packageSource key="nuget.org"><package pattern="*" /></packageSource>
+            </packageSourceMapping>
+          </configuration>
+          '@ | Set-Content NuGet.Config
+      - name: Build Library packages
+        run: |
+          foreach ($name in @('LTRData.Extensions', 'LTRData.MathExpression')) {
+            $project = "library/$name/$name.csproj"
+            dotnet restore $project --configfile NuGet.Config
+            if ($LASTEXITCODE) { throw "Restore failed: $project" }
+            dotnet build $project -c Release --no-restore
+            if ($LASTEXITCODE) { throw "Package build failed: $project" }
+          }
+      - name: Build every netexpr target
+        run: |
+          dotnet restore consumer/netexpr/netexpr.vbproj --configfile NuGet.Config
+          if ($LASTEXITCODE) { throw 'Consumer restore failed' }
+          dotnet build consumer/netexpr/netexpr.vbproj -c Release --no-restore
+          if ($LASTEXITCODE) { throw 'Consumer build failed' }
+      - name: Run command-line scenarios
+        run: |
+          dotnet restore consumer/netexpr.Review/netexpr.Review.csproj --configfile NuGet.Config
+          if ($LASTEXITCODE) { throw 'Review restore failed' }
+          dotnet run --project consumer/netexpr.Review/netexpr.Review.csproj -c Release --no-restore
+          if ($LASTEXITCODE) { throw 'Review failed' }
