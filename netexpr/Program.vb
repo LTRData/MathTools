@@ -1,5 +1,4 @@
 ﻿Imports System.Globalization
-Imports System.Linq.Expressions
 Imports LTRData.Extensions.Formatting
 Imports LTRData.MathExpression
 
@@ -29,21 +28,39 @@ Public Module Program
             Return -1
         End If
 
-        Dim exprParser As New MathExpressionParser(CultureInfo.InvariantCulture)
-        Dim parameters As ParameterExpression() = Nothing
+        Dim parse = MathParser.Default.Parse(String.Join(" ", args))
+        If Not parse.Success Then
+            Return ReportDiagnostics(parse.Diagnostics)
+        End If
 
-        Dim expr = exprParser.ParseExpression(String.Join(" ", args), parameters)
+        Dim binding = MathBinder.Bind(parse.Root, MathSymbolCatalog.Standard)
+        If Not binding.Success Then
+            Return ReportDiagnostics(binding.Diagnostics)
+        End If
 
-        If parameters.Length > 0 Then
+        Dim expression = binding.Expression
+        Dim parameters = expression.Variables
+        Dim values(parameters.Count - 1) As Double
+        Dim supplied(parameters.Count - 1) As Boolean
+        Dim remaining = parameters.Count
+
+        If remaining > 0 Then
             Console.WriteLine($"Enter values for parameters: {parameters.Select(Function(p) p.Name).Join(", ")}")
         End If
 
-        Dim paramValues As New Dictionary(Of String, KeyValuePair(Of ParameterExpression, Double))
+        While remaining > 0
+            Dim input = Console.ReadLine()
+            If input Is Nothing Then
+                Console.Error.WriteLine("Input ended before all parameter values were supplied.")
+                Return -1
+            End If
 
-        While Not parameters.All(Function(p) paramValues.ContainsKey(p.Name))
+            Dim line = input.Split(separator, StringSplitOptions.RemoveEmptyEntries)
+            If line.Length = 0 Then
+                Continue While
+            End If
 
-            Dim line = Console.ReadLine().Split(separator, StringSplitOptions.RemoveEmptyEntries)
-            Dim param = parameters.FirstOrDefault(Function(p) p.Name = line(0))
+            Dim param = parameters.FirstOrDefault(Function(p) String.Equals(p.Name, line(0), StringComparison.OrdinalIgnoreCase))
             If param Is Nothing Then
                 Console.Error.WriteLine($"Parameter {line(0)} not part of expression.")
                 Continue While
@@ -62,18 +79,15 @@ Public Module Program
                 Continue While
             End If
 
-            paramValues.Add(param.Name, New KeyValuePair(Of ParameterExpression, Double)(param, value))
+            values(param.Slot) = value
+            If Not supplied(param.Slot) Then
+                supplied(param.Slot) = True
+                remaining -= 1
+            End If
 
         End While
 
-#If NETFRAMEWORK AndAlso Not NET40_OR_GREATER Then
-        Dim lambda = Expression.Lambda(expr, paramValues.Values.Select(Function(v) v.Key).ToArray()).Compile()
-#Else
-        Dim lambda = Expression.Lambda(expr, paramValues.Values.Select(Function(v) v.Key)).Compile()
-#End If
-
-        Dim values = paramValues.Values.Select(Function(v) CObj(v.Value)).ToArray()
-        Dim returnValue = CDbl(lambda.DynamicInvoke(values))
+        Dim returnValue = expression.Evaluate(values)
 
         Console.WriteLine(returnValue.ToString(NumberFormatInfo.InvariantInfo))
 
@@ -90,6 +104,13 @@ Public Module Program
 
         End Try
 
+    End Function
+
+    Private Function ReportDiagnostics(diagnostics As IEnumerable(Of MathDiagnostic)) As Integer
+        For Each diagnostic In diagnostics
+            Console.Error.WriteLine(diagnostic.ToString())
+        Next
+        Return -1
     End Function
 
 End Module

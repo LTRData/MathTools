@@ -7,4 +7,5 @@
   <Project Path="coordtool/coordtool.csproj" />
   <Project Path="luhn/luhn.csproj" />
   <Project Path="netexpr/netexpr.vbproj" />
+  <Project Path="netexpr.Review/netexpr.Review.csproj" />
 </Solution>

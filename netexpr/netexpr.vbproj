@@ -8,7 +8,7 @@
 
   <ItemGroup>
 	<PackageReference Include="LTRData.Extensions" Version="*" />
-	<PackageReference Include="LTRData.MathExpression" Version="*" />
+	<PackageReference Include="LTRData.MathExpression" Version="1.1.0-preview.1" />
   </ItemGroup>
 
 </Project>
