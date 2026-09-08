@@ -1,7 +1,7 @@
 # netexpr modern expression API review
 
 The migration uses `MathParser`, `MathBinder`, the standard symbol catalog and
-interpreted evaluation from `LTRData.MathExpression` 1.1.0-preview.1. All existing
+interpreted evaluation from `LTRData.MathExpression` 1.1.0. All existing
 targets remain: net35, net40, net8.0, net9.0 and net10.0.
 
 Formula arguments are joined as before. Variables are prompted in first-use order,
@@ -53,5 +53,6 @@ mapping and a fresh cache. Nothing is published to a NuGet server. For equivalen
 local configuration, see Library's
 [local package workflow](https://github.com/LTRData/Library/blob/experimental/math-expression-redesign/docs/local-package-workflow.md).
 
-Try your own saved formulas and shell scripts, particularly any that use old
-operator syntax or assume a conventional zero-on-success exit code.
+The application owner has built and tested this migration successfully. Saved
+formulas and shell scripts remain useful review cases, particularly any that use
+old operator syntax or assume a conventional zero-on-success exit code.

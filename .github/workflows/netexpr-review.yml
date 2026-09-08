@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: LTRData/Library
-          ref: 162d02a80c456e2c782eaad86a6f132db7e2f704
+          ref: 0e853ea1abdc3d4484695db1e026ebf88535ae42
           path: library
       - uses: actions/setup-dotnet@v5
         with:
